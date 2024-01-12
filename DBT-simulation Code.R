@@ -6,9 +6,9 @@ diff.fn = function(n,lmd,y,method=1){
   # n is sample size; lmd is the parameter to control the bandwidth; 
   # y is the response
   # two methods for the bandwidth selection
-  if(method==1){m =round((1+lmd - sqrt(lmd^2+2*lmd))*sqrt(14*n))};
+  if(method==1){m =ceiling((1+lmd - sqrt(lmd^2+2*lmd))*sqrt(14*n))};
   if(method==2){r <- optimize(beta.v,interval=c(0.7,0.85),n=n,y=y)$minimum;
-  m=round(n^r)}
+  m=ceiling(n^r)}
   N=n*m - m*(m+1)/2;
   wk = seq(n-1,n-m)/N;   
   dk = (seq(1,m)/n)^2;
@@ -366,7 +366,7 @@ kernel.mean=function(y,x,bdw,K=kernel.quad.n,dx=1,dy=1,cv=F,ind.print=F)
 }
 
 Keil.test <- function(x,y,n){
-  h0=1.06*sd(x)*n^(-1/6);
+  h0=1.06*sd(x)*n^(-1/5);
   F.d <- numeric()
   m.hat <- kernel.mean(y,x,h0,K = kernel.quad.n)
   sg2.hat <- mean((y-m.hat)^2)
@@ -389,7 +389,7 @@ Keil.test <- function(x,y,n){
     f.e[i] <- mean(kernel.quad.n((e.star[i] - e.star)/h1))/h1 }
     D.Tks[b] <- max(abs(f.e))* abs(rnorm(1,0,1))
   }
-  Tks.t <- Tks > quantile(D.Tks,0.95)
+  Tks.t <- (Tks > quantile(D.Tks,0.95))
   return(list(Tks.t=Tks.t))
 }
 
@@ -416,7 +416,7 @@ K.Test <- function(nv,sg,ns,a,f){
 for(n in c(30,50,100)){
 startTime <- Sys.time()
 set.seed(1)
-print(K.Test(nv=n,sg=0.3,ns=100,a=c(0,0.2,0.5,0.7,1),f=1))
+print(K.Test(nv=n,sg=0.3,ns=1000,a=c(0,0.2,0.5,0.7,1),f=1))
 endTime <- Sys.time()
 print(endTime - startTime)
 }
